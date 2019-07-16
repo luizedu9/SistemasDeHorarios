@@ -1,0 +1,114 @@
+   <ui:composition template="/WEB-INF/templates/layout.xhtml" 
+   xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:h="http://xmlns.jcp.org/jsf/html"
+   xmlns:f="http://xmlns.jcp.org/jsf/core"
+   xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+   xmlns:p="http://primefaces.org/ui">
+ 
+    <ui:define name="conteudo">
+    
+    <h1 class="if-page-title">Cadastro de Usuário</h1>
+		<h:form  id="frm">
+		
+		<!-- Atualizar bean -->
+		<f:metadata>
+			<f:viewParam name="dummy" />
+			<f:event listener="#{usuario.preRender}" type="preRenderView" />
+		</f:metadata>
+        
+        <!-- MENU -->
+        <p:toolbar>
+             <p:toolbarGroup  align="left">
+               <p:commandButton value="Salvar"
+                                icon="ui-icon-check"
+                                action="#{usuario.salvar}"
+                                update="frm"/>
+             </p:toolbarGroup>             
+          
+             <p:toolbarGroup  align="right">
+               <p:commandButton value="Novo"
+                                icon="ui-icon-plus"
+                                action="#{usuario.novo}"/>
+               <p:button value="Pesquisar" outcome="usuario"/>                 
+             </p:toolbarGroup>             
+          </p:toolbar> 
+        
+        <!-- FORMULARIO -->
+        <p:messages/>
+        <div class="ui-fluid">
+	        <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-2, ui-grid-col-10">
+	        
+				<p:outputLabel value="Nome:" for="txtNome" />
+		        <p:inputText value="#{usuario.obj.nome}" id="txtNome" required="true"
+		        			 requiredMessage="Informe o nome do usuario."
+						     validatorMessage="O nome deve ter 3 caracteres ou mais." >
+					<f:validateLength minimum="3" maximum="50"/>
+		        </p:inputText>
+		        
+		        <p:outputLabel value="CPF:" for="txtCPF" />
+		        <p:inputMask value="#{usuario.obj.cpf}" id="txtCPF" required="true"
+		        			 requiredMessage="Informe o CPF." mask="999.999.999-99"/>
+		        
+		        <p:outputLabel value="Endereço:" for="txtEndereco" />
+		        <p:inputText value="#{usuario.obj.endereco}" id="txtEndereco"
+		        		     requiredMessage="Informe o endereço do usuario."
+		        		     validatorMessage="O endereço deve ter 4 caracteres ou mais." required="true"  >
+					<f:validateLength minimum="4" maximum="50"/>
+		        </p:inputText>
+		        
+		        <p:outputLabel for="txtEmail" value="Email" />
+                 <p:inputText   id="txtEmail" value="#{usuario.obj.email}"
+                        required="true"  requiredMessage="Informe o email do usuario."
+                        validatorMessage="Email inválido">
+                   <f:validateRegex pattern="[a-zA-Z0-9\-\_\.]+@[a-zA-Z0-9\-\_\.]+"/>          
+                 </p:inputText> 
+		        
+		        <p:outputLabel value="SIAPE:" for="txtSIAPE" />
+		        <p:inputMask value="#{usuario.obj.siape}" id="txtSIAPE" mask="99999999" />
+		        
+		        <p:outputLabel value="Data de nascimento" for="dtNascimento" />
+		         <p:calendar id="dtNascimento" required="true"
+                      value="#{usuario.obj.data_nascimento}" 
+                      pattern="dd/MM/yyyy" requiredMessage="Informe a data de nascimento do usuario."
+				      locale="pt" />
+				      
+				<p:outputLabel for="rdbSexo" value="Sexo:" />
+		        <p:selectOneRadio id="rdbSexo" value="#{usuario.obj.sexo}">
+		        	<f:selectItems value="#{usuario.sexos}" var="sexo" itemValue="#{sexo}" itemLabel="#{sexo.descricao}"/>
+		        </p:selectOneRadio>
+		        
+		       <p:outputLabel for="rdbPermissao" value="Tipo de Usuário:" />
+		        <p:selectManyCheckbox  id="rdbPermissao" value="#{usuario.permissoes}" required="true" requiredMessage="Nenhuma permissão adicionada para o usuário.">
+		        	<f:selectItem itemLabel="Direção de Ensino" itemValue="DE" />
+		        	<f:selectItem itemLabel="Coordenador" itemValue="COORDENADOR" />
+		        	<f:selectItem itemLabel="Professor" itemValue="PROFESSOR" />
+		        </p:selectManyCheckbox >
+		        
+		        <p:outputLabel value="Login:" for="txtLogin" />
+		        <p:inputText value="#{usuario.obj.login}" id="txtLogin" required="true"
+		        			 requiredMessage="Informar um login para o usuário"
+						     validatorMessage="O login deve ter 3 caracteres ou mais." >
+					<f:validateLength minimum="3" maximum="50"/>
+		        </p:inputText>
+		        
+		        <p:outputLabel value="Senha" for="inpSenha" />
+		        <p:password id="inpSenha" required="true" value="#{usuario.obj.senha}"
+				      feedback="true" weakLabel="Fraca" goodLabel="Boa"
+				      strongLabel="Forte" promptLabel=" Informe uma senha"
+	                  inline="true" match="confirmacaoSenha"
+	                  requiredMessage="Informar uma senha para o usuário"
+				      validatorMessage="A senha deve ter 3 caracteres ou mais.">
+				      <f:validateLength minimum="3" maximum="50"/>
+				</p:password>
+	               
+		        <p:outputLabel value="Confirme a senha" for="confirmacaoSenha" />
+		        <p:password id="confirmacaoSenha" required="true" requiredMessage="Confirmar a senha do usuário"
+								validatorMessage="As senhas não conferem." />
+		        		       
+			</p:panelGrid>
+		</div>
+		
+
+		</h:form>
+    </ui:define>
+</ui:composition>

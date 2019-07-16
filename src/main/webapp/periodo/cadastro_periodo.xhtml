@@ -1,0 +1,68 @@
+
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="conteudo">
+
+		<h1 class="if-page-title">Cadastro de Período</h1>
+		<h:form id="frm">
+
+			<!-- Atualizar bean -->
+			<f:metadata>
+				<f:viewParam name="dummy" />
+				<f:event listener="#{periodo.preRender}" type="preRenderView" />
+			</f:metadata>
+
+			<!-- MENU -->
+			<p:toolbar>
+				<p:toolbarGroup align="left">
+					<p:commandButton value="Salvar" icon="ui-icon-check"
+						action="#{periodo.salvar}" update="frm" />
+				</p:toolbarGroup>
+
+				<p:toolbarGroup align="right">
+					<p:commandButton value="Novo" icon="ui-icon-plus"
+						action="#{periodo.novo}" />
+					<p:button value="Pesquisar" outcome="periodo" />
+				</p:toolbarGroup>
+				
+				
+			</p:toolbar>
+
+			<!-- FORMULARIO -->
+			<p:messages />
+			<div class="ui-fluid">
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-10">
+					<p:outputLabel value="Nome:" for="txtNome" />
+					<p:inputText value="#{periodo.obj.nome}" id="txtNome"
+						required="true" requiredMessage="Informe o nome do período."
+						validatorMessage="O nome deve ter 3 caracteres ou mais." >
+						<f:validateLength minimum="3" maximum="50" />
+					</p:inputText>
+
+					<p:outputLabel value="Semestre:" for="txtSemestre" />
+					<p:inputText value="#{periodo.obj.semestre}" id="txtSemestre"
+						required="true" requiredMessage="Informe o semestre do período." />
+
+					<p:outputLabel value="Ano:" for="txtAno" />
+					<p:inputText value="#{periodo.obj.ano}" id="txtAno" required="true" requiredMessage="Informe o ano."/>
+
+					<p:outputLabel value="Cursos:" for="somCursos" />
+					<p:selectOneMenu id="somCursos" value="#{periodo.obj.curso}"
+						converter="cursoConverter" required="true" requiredMessage="Informe o curso.">
+						<f:selectItems value="#{periodo.cursos}" />
+					</p:selectOneMenu>
+
+
+				</p:panelGrid>
+			</div>
+
+
+		</h:form>
+	</ui:define>
+</ui:composition>

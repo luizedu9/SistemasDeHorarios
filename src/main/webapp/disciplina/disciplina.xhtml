@@ -1,0 +1,106 @@
+   <ui:composition template="/WEB-INF/templates/layout.xhtml" 
+   xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:h="http://xmlns.jcp.org/jsf/html"
+   xmlns:f="http://xmlns.jcp.org/jsf/core"
+   xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+   xmlns:p="http://primefaces.org/ui">
+ 
+    <ui:define name="conteudo">
+    
+	<h1 class="if-page-title">Disciplinas</h1>
+		<h:form  id="frm">
+		
+		<!-- Atualizar bean -->
+		<f:metadata>
+			<f:viewParam name="dummy" />
+			<f:event listener="#{disciplina.preRender}" type="preRenderView" />
+		</f:metadata>
+		
+		<!-- MENU -->
+		<p:toolbar>
+			<p:toolbarGroup  align="left">
+				<p:commandButton value="Novo" icon="ui-icon-plus" action="#{disciplina.novo}"/>
+			</p:toolbarGroup>             
+        </p:toolbar>          
+          
+        <!-- TABELA -->
+		<p:messages/>
+		<p:dataTable value="#{disciplina.disciplinas}"
+                     var="obj" 
+                     selectionMode="single"
+                     selection="#{disciplina.obj}"
+                     rowKey="#{obj.codigo}"
+                     reflow="true"
+                     style="margin-top: 20px"
+                     paginator="true"
+                     sortBy="#{obj.codigo}"
+                     id="tbDisciplina"
+                     emptyMessage="Não existe registros cadastrados">
+                       
+			<p:column headerText="Código"  width="10%">
+			     <h:outputText value="#{obj.codigo}" />
+			</p:column>
+			 
+			<p:column headerText="Nome">
+			     <h:outputText value="#{obj.nome}" />
+			</p:column>
+			
+			<p:column headerText="Tipo">
+			     <h:outputText value="#{obj.tipo.descricao}" />
+			</p:column>
+			
+			<p:column headerText="Carga Horária">
+			     <h:outputText value="#{obj.carga_horaria}" />
+			</p:column>
+			
+			<p:column headerText="Ano">
+			     <h:outputText value="#{obj.ano}" />
+			</p:column>
+			
+			<p:column headerText="Tipo Sala">
+			     <h:outputText value="#{obj.tipo_sala_requerida.descricao}" />
+			</p:column>
+          
+			<p:column headerText="Opções" width="10%">
+				<p:commandButton icon="ui-icon-trash" title="Excluir" update="frm"
+			                      oncomplete="PF('confirmacao').show(); return false;">
+					<f:setPropertyActionListener target="#{disciplina.obj}" value="#{obj}" />
+			    </p:commandButton>       
+			    <p:commandButton icon="ui-icon-info" title="Listar Cursos" update="frm"
+			                      oncomplete="PF('listCursos').show(); return false;">
+			     	<f:setPropertyActionListener target="#{disciplina.obj}" value="#{obj}" />
+			    </p:commandButton> 
+			</p:column>
+             
+			<f:facet name="footer">
+                <p:commandButton icon="ui-icon-pencil" value="Editar" action="#{disciplina.editar}" />
+            </f:facet>
+		</p:dataTable>
+
+			<p:confirmDialog header="Exclusão de item"
+				message="Tem certeza que deseja excluir esse registro?"
+				widgetVar="confirmacao">
+				<p:commandButton value="Sim" action="#{disciplina.excluir}"
+					update="frm" process="@this"
+					oncomplete="PF('confirmacao').hide()" />
+				<p:button value="Não"
+					onclick="PF('confirmacao').hide(); return false;" />
+			</p:confirmDialog>
+			
+			<p:dialog header="Cursos" widgetVar="listCursos" modal="true" closeOnEscape="true">
+				<p:dataList value="#{disciplina.obj.cursos}" var="obj" 
+                            itemType="disc"
+                            rendered="#{not empty disciplina.obj.cursos}">
+                        	#{obj.nome}
+                </p:dataList>
+               
+                <p:outputLabel value="Esta disciplina não está associada a nenhum curso."
+                               rendered="#{empty disciplina.obj.cursos}"
+                />
+			</p:dialog>
+		</h:form>
+    </ui:define>
+ 
+   
+   
+   </ui:composition>

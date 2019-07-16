@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+	<f:facet name="first">
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+	</f:facet>
+
+	<title>IFMG-Campus Formiga</title>
+	
+	<h:outputStylesheet library="ifmg" name="css/layout.css" />
+	
+	<h:outputScript target="body" library="primefaces" name="jquery/jquery.js" />
+    <h:outputScript target="body" library="ifmg" name="js/app.js" />
+</h:head>
+
+<h:body>
+
+	<header class="if-topbar">
+		<h:graphicImage library="ifmg" name="images/logo-ifmg.png" 
+		    width="100" height="50"/>
+		<ul>
+			<li><h:outputLink value="/projeto/j_spring_security_logout">
+					<i class="fa fa-fw fa-power-off"></i> #{seguranca.nomeUsuario}
+				</h:outputLink>
+			</li>
+		</ul>
+		<a href="#" class="if-toggle  js-toggle"><i class="fa  fa-bars"></i></a>    
+	</header>
+	
+	<aside class="if-sidebar  js-sidebar">
+		<nav class="if-menu">
+			<ul>
+				<li><h:link outcome="/horario/horario" rendered="#{(seguranca.permDE or seguranca.permCoordenador or seguranca.permProfessor)}">
+						<i class="fa  fa-fw  fa-calendar"></i>Horários</h:link></li>
+				<li><h:link outcome="/turma//turma" rendered="#{(seguranca.permDE)}">
+						<i class="fa  fa-fw  fa-users"></i>Turmas</h:link></li>
+				 <li><h:link outcome="/sala/sala" rendered="#{(seguranca.permDE)}">
+						<i class="fa  fa-fw  fa-home"></i>Salas</h:link></li>
+				<li><h:link outcome="/disciplina/disciplina" rendered="#{(seguranca.permDE)}">
+						<i class="fa  fa-fw  fa-book"></i>Disciplinas</h:link></li>
+				<li><h:link outcome="/curso/curso" rendered="#{(seguranca.permDE)}">
+						<i class="fa  fa-fw  fa-briefcase"></i>Cursos</h:link></li>
+				<li><h:link outcome="/periodo/periodo" rendered="#{(seguranca.permDE)}">
+						<i class="fa  fa-fw  fa-sort-numeric-asc"></i>Períodos</h:link></li>
+				<li><h:link outcome="/usuario/usuario" rendered="#{(seguranca.permDE)}">
+						<i class="fa  fa-fw  fa-user"></i>Usuários</h:link></li>
+			</ul>
+			<p:separator rendered="#{(seguranca.permCoordenador and seguranca.permDE)}" />
+			<ul>
+				<li><h:link outcome="/solicitacoes/solicitar_disciplina" rendered="#{(seguranca.permCoordenador)}">
+						<i class="fa  fa-fw  fa-flag"></i>Solicitar Disciplinas</h:link></li>
+				<li><h:link outcome="/solicitacoes/gerenciar_solicitacoes" rendered="#{(seguranca.permCoordenador)}">
+						<i class="fa  fa-fw  fa-bell"></i>Solicitações</h:link></li>
+
+			</ul>
+		</nav>
+	</aside>
+    
+    <section class="if-content  js-content">
+		<ui:insert name="conteudo" />
+    </section>
+    
+</h:body>
+</html>

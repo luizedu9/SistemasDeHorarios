@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+	<f:facet name="first">
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+	</f:facet>
+
+	<title>IFMG-Campus Formiga</title>
+	
+	<h:outputStylesheet library="ifmg" name="css/layout.css" />
+	
+	<h:outputScript target="body" library="primefaces" name="jquery/jquery.js" />
+    <h:outputScript target="body" library="ifmg" name="js/app.js" />
+</h:head>
+
+<h:body>
+
+	<header class="if-topbar">
+		<h:graphicImage library="ifmg" name="images/logo-ifmg.png" 
+		    width="100" height="50"/>
+		    
+		    
+	</header>
+	
+    
+    <section class="if-content-externo">
+		<ui:insert name="conteudo" />
+    </section>
+    
+</h:body>
+</html>

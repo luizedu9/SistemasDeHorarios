@@ -1,0 +1,373 @@
+
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="conteudo">
+
+		<h1 class="if-page-title">Horários</h1>
+		<h:form id="frm">
+
+			<p:messages />
+
+			<p:toolbar>
+				<p:toolbarGroup align="left">
+
+					<p:outputLabel value="Cursos: " for="cursos" />
+					<p:selectOneMenu id="cursos" converter="cursoConverter"
+						value="#{horario.cursoSelecionado}" style="width:150px" >
+						<p:ajax event="change" listener="#{horario.changeCurso}"
+							update="frmPr, frm" />
+						<!-- <f:selectItem itemLabel="Selecione um curso"
+							noSelectionOption="true" /> -->
+						<f:selectItems var="obj" value="#{horario.listaCursos}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Ano: " for="anos"
+						rendered="#{horario.cursoSelecionado != null}" />
+					<p:selectOneMenu id="anos" value="#{horario.anoSelecionado}"
+						rendered="#{horario.cursoSelecionado != null}" style="width:150px">
+						<p:ajax event="change" listener="#{horario.changeAno}"
+							update="frmPr, frm" />
+						<!-- <f:selectItem itemLabel="Selecione um ano"
+							noSelectionOption="true" /> -->
+						<f:selectItems value="#{horario.listaAnos}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Semestre:  " for="semestres"
+						rendered="#{horario.cursoSelecionado != null and horario.anoSelecionado != null}" />
+					<p:selectOneMenu id="semestres"
+						rendered="#{horario.cursoSelecionado != null and horario.anoSelecionado != null}"
+						value="#{horario.semestreSelecionado}" style="width:150px">
+						<p:ajax event="change" listener="#{horario.changeSemestre}"
+							update="frmPr, frm" />
+						<!-- <f:selectItem itemLabel="Selecione um semestre"
+							noSelectionOption="true" /> -->
+						<f:selectItems value="#{horario.listaSemestre}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Nome:  " for="nomes"
+						rendered="#{horario.cursoSelecionado != null and horario.anoSelecionado != null and horario.semestreSelecionado != null}" />
+					<p:selectOneMenu id="nomes"
+						rendered="#{horario.cursoSelecionado != null and horario.anoSelecionado != null and horario.semestreSelecionado != null}"
+						value="#{horario.nomePeriodoSelecionado}" style="width:150px">
+						<p:ajax event="change" listener="#{horario.changeNomePeriodo}"
+							update="frmPr, frm" />
+						<!-- <f:selectItem itemLabel="Selecione um semestre"
+							noSelectionOption="true" /> -->
+						<f:selectItems value="#{horario.listnomePeriodo}" />
+					</p:selectOneMenu>
+
+
+				</p:toolbarGroup>
+
+				<p:toolbarGroup align="right">
+					<p:commandButton value="Cadastrar" icon="ui-icon-plus"
+						action="#{horario.cadastrarHorario}" update="frm2"
+						rendered="#{horario.cursoSelecionado != null and horario.anoSelecionado != null and horario.semestreSelecionado != null}"
+						oncomplete="PF('Categoria').show();" />
+				</p:toolbarGroup>
+
+
+			</p:toolbar>
+
+		</h:form>
+		<h:form id="frm2" >
+
+			<p:dialog header="Horário" modal="true" showEffect="fade" width="80%" 
+				hideEffect="fade" resizable="false" widgetVar="Categoria">
+
+				<f:facet name="header">
+				</f:facet>
+				<p:messages />
+
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-5, ui-grid-col-5">
+
+					<p:outputLabel value="Sala:" for="selectSala" />
+					<p:selectOneMenu id="selectSala" value="#{horario.horario.sala}"
+						converter="salaConverter">
+						<p:ajax event="change" listener="#{horario.changeSala}"
+							update="tabelaSala" />
+						<f:selectItems var="obj" value="#{horario.listaSalas}" />
+					</p:selectOneMenu>
+					
+					<p:outputLabel value="Cursos: " for="cursos" />
+					<p:selectOneMenu id="cursos" converter="cursoConverter"
+						value="#{horario.cursoSelecionado}" style="width:150px" >
+						<!-- <f:selectItem itemLabel="Selecione um curso"
+							noSelectionOption="true" /> -->
+						<f:selectItems var="obj" value="#{horario.listaCursos}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Turma: " for="selectTurma" />
+					<p:selectOneMenu id="selectTurma" value="#{horario.horario.turma}" converter="turmaConverter">
+						<p:ajax event="change" listener="#{horario.changeTurma}"
+							update="tabelaTurma tabelaProfessor" />
+						<f:selectItems value="#{horario.listaTurma}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Dia:  " for="selectDia" />
+					<p:selectOneMenu id="selectDia" value="#{horario.horario.dia}">
+						<f:selectItem itemLabel="Segunda" itemValue="Segunda" />
+						<f:selectItem itemLabel="Terça" itemValue="Terça" />
+						<f:selectItem itemLabel="Quarta" itemValue="Quarta" />
+						<f:selectItem itemLabel="Quinta" itemValue="Quinta" />
+						<f:selectItem itemLabel="Sexta" itemValue="Sexta" />
+						<f:selectItem itemLabel="Sabado" itemValue="Sabado" />
+					</p:selectOneMenu>
+
+
+					<p:outputLabel for="timeinit" value="Horário Inicio:" />
+					<p:calendar id="timeinit" pattern="HH:mm" timeOnly="true"
+						value="#{horario.horario.inicio}" />
+
+					<p:outputLabel for="timeend" value="Horário Fim:" />
+					<p:calendar id="timeend" pattern="HH:mm" timeOnly="true"
+						value="#{horario.horario.fim}" />
+				</p:panelGrid>
+
+				<p:commandButton style="width: 100%;" value="Salvar" icon="ui-icon-check"
+					action="#{horario.salvarHorario}" update="frm" />
+					
+					
+					
+				<p:outputPanel id="todosHorarios">
+		            <p:panelGrid  columns="3">
+		            	<p:column>
+		            	<!-- SALA -->
+		            		<p:dataTable id="tabelaSala" var="celula"
+					value="#{horario.tabelaHorarioSala.celulas}">
+					<f:facet name="header">
+			            Sala
+			        </f:facet>
+					<p:column headerText="Horario" width="8%">
+						<h:outputText value="#{celula.horario}" />
+					</p:column>
+
+					<p:column headerText="Segunda" width="8%">
+						<p:repeat value="#{celula.segunda}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+
+					<p:column headerText="Terça" width="8%">
+						<p:repeat value="#{celula.terca}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+
+					<p:column headerText="Quarta" width="8%">
+						<p:repeat value="#{celula.quarta}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+
+					<p:column headerText="Quinta" width="8%">
+						<p:repeat value="#{celula.quinta}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+
+					<p:column headerText="Sexta" width="8%">
+						<p:repeat value="#{celula.sexta}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+
+					<p:column headerText="Sabado" width="8%">
+						<p:repeat value="#{celula.sabado}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+				</p:dataTable>
+		            	</p:column>
+		               
+		               
+		               <p:column>
+		               <!-- PROFESSOR -->
+				<p:dataTable id="tabelaProfessor" var="celula"
+					value="#{horario.tabelaHorarioProfessor.celulas}">
+					<f:facet name="header">
+			            Professor
+			        </f:facet>
+					<p:column headerText="Horario" style="width:8%;">
+						<h:outputText value="#{celula.horario}" />
+					</p:column>
+
+					<p:column headerText="Segunda" style="width:8%;">
+						<p:repeat value="#{celula.segunda}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+
+					<p:column headerText="Terça" style="width:8%;">
+						<p:repeat value="#{celula.terca}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+
+					<p:column headerText="Quarta" style="width:8%;">
+						<p:repeat value="#{celula.quarta}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+
+					<p:column headerText="Quinta" style="width:8%;">
+						<p:repeat value="#{celula.quinta}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+
+					<p:column headerText="Sexta" style="width:8%;">
+						<p:repeat value="#{celula.sexta}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+
+					<p:column headerText="Sabado" style="width:8%;">
+						<p:repeat value="#{celula.sabado}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+				</p:dataTable>
+		               </p:column>
+		               
+		               
+		               <p:column>
+		               	<!-- TURMA -->
+				<p:dataTable id="tabelaTurma" var="celula"
+					value="#{horario.tabelaHorarioTurma.celulas}">
+					<f:facet name="header">
+			            Turma
+			        </f:facet>
+					<p:column headerText="Horario" style="width:8%;">
+						<h:outputText value="#{celula.horario}" />
+					</p:column>
+
+					<p:column headerText="Segunda" style="width:8%;">
+						<p:repeat value="#{celula.segunda}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+
+					<p:column headerText="Terça" style="width:8%;">
+						<p:repeat value="#{celula.terca}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+
+					<p:column headerText="Quarta" style="width:8%;">
+						<p:repeat value="#{celula.quarta}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+
+					<p:column headerText="Quinta" style="width:8%;">
+						<p:repeat value="#{celula.quinta}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+
+					<p:column headerText="Sexta" style="width:8%;">
+						<p:repeat value="#{celula.sexta}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+
+					<p:column headerText="Sabado" style="width:8%;">
+						<p:repeat value="#{celula.sabado}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+				</p:dataTable>
+		               </p:column>
+		               
+		               
+		            </p:panelGrid>
+		        </p:outputPanel>
+				
+			</p:dialog>
+
+
+
+		</h:form>
+		
+		<h:form id="frmPr">
+			<div class="ui-grid-col-12" style="margin-top: 50px;">
+				<p:dataTable id="tabelaPrincipal" var="celula"
+					value="#{horario.tabelaHorario.celulas}">
+
+					<p:column headerText="Horario" width="16%">
+						<h:outputText value="#{celula.horario}" />
+					</p:column>
+
+					<p:column headerText="Segunda" width="16%">
+						<p:repeat value="#{celula.segunda}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+
+					<p:column headerText="Terça" width="16%">
+						<p:repeat value="#{celula.terca}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+
+					<p:column headerText="Quarta" width="16%">
+						<p:repeat value="#{celula.quarta}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+
+					<p:column headerText="Quinta" width="16%">
+						<p:repeat value="#{celula.quinta}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+
+					<p:column headerText="Sexta" width="16%">
+						<p:repeat value="#{celula.sexta}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+
+					<p:column headerText="Sabado" width="16%">
+						<p:repeat value="#{celula.sabado}" var="obj">
+							<h:outputText value="#{obj}" />
+							<h:outputText value="&lt;hr /&gt;" escape="false" />
+						</p:repeat>
+					</p:column>
+
+				</p:dataTable>
+			</div>
+		</h:form>
+	</ui:define>
+	
+</ui:composition>
